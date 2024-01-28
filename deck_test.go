@@ -18,6 +18,7 @@ const (
 		"K♥, A♦, Q♦, 8♦, K♣, 6♥, K♦, 9♣, 9♦, " +
 		"7♥, J♥, 6♦, Q♣, A♥, J♣, 8♥, 10♠, A♣, " +
 		"8♣, 10♣, 7♣, A♠, 10♦, J♦, 10♥, J♠, 9♥"
+	filename = "./dumped_decks/_test_deck.txt"
 )
 
 func TestNewDeckGetErrorWhenPassInvalidSize(t *testing.T) {
@@ -91,5 +92,32 @@ func TestDeck_Shuffle(t *testing.T) {
 
 	if deck.toString() != smallDeckAfterShuffle {
 		t.Errorf("Expected to shuffeled deck, but got: %v", deck)
+	}
+}
+
+func TestSaveDeckToFileAndReadDeckFromFile(t *testing.T) {
+	deck, err := NewDeck(36)
+	if err != nil {
+		t.Errorf("Not expected error: %v", err)
+	}
+
+	err = SaveDeckToFile(filename, deck)
+	if err != nil {
+		t.Errorf("Not expected error: %v", err)
+	}
+	defer func() {
+		err = RemoveDeckFile(filename)
+		if err != nil {
+			t.Errorf("Not expected error: %v", err)
+		}
+	}()
+
+	dumpedDeck, readFileErr := ReadDeckFromFile(filename)
+	if readFileErr != nil {
+		t.Errorf("Not expected error: %v", err)
+	}
+
+	if deck.toString() != dumpedDeck.toString() {
+		t.Errorf("Expected equal decks, but got: deck=%v, dumpedDeck=%v", deck, dumpedDeck)
 	}
 }

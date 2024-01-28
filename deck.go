@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -12,6 +13,7 @@ type Deck []string
 const (
 	SmallDeckSize = 36
 	BigDeckSize   = 52
+	separator     = ", "
 )
 
 func NewDeck(size int) (Deck, error) {
@@ -49,7 +51,11 @@ func NewDeck(size int) (Deck, error) {
 }
 
 func (d Deck) toString() string {
-	return strings.Join(d, ", ")
+	return strings.Join(d, separator)
+}
+
+func deckFromString(s string) Deck {
+	return strings.Split(s, separator)
 }
 
 func (d Deck) Print() {
@@ -73,10 +79,23 @@ func Deal(d Deck, size int) (Deck, Deck, error) {
 	return d[:size], d[size:], nil
 }
 
-func SaveDeckToFile(d Deck) error {
-	return nil
+func SaveDeckToFile(filename string, d Deck) error {
+	return os.WriteFile(
+		filename,
+		[]byte(d.toString()),
+		0666,
+	)
 }
 
-func ReadDeckFromFile() (Deck, error) {
-	return Deck{}, nil
+func ReadDeckFromFile(filename string) (Deck, error) {
+	file, err := os.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	return deckFromString(string(file)), nil
+}
+
+func RemoveDeckFile(filename string) error {
+	return os.Remove(filename)
 }
