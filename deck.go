@@ -10,7 +10,7 @@ type Deck []string
 
 const (
 	SmallDeckSize = 36
-	BigDeckSize   = 54
+	BigDeckSize   = 52
 )
 
 func NewDeck(size int) (Deck, error) {
@@ -52,15 +52,24 @@ func (d Deck) toString() string {
 }
 
 func (d Deck) Print() {
-
+	fmt.Println(d.toString())
 }
 
 func (d Deck) Shuffle() {
 
 }
 
-func Deal(d Deck) (Deck, Deck) {
-	return Deck{}, Deck{}
+func Deal(d Deck, size int) (Deck, Deck, error) {
+	deckLen := len(d)
+	if size > deckLen {
+		return nil, nil, fmt.Errorf(
+			"size bigger than deck: size=%d, len(deck)=%d",
+			size,
+			deckLen,
+		)
+	}
+
+	return d[:size], d[size:], nil
 }
 
 func SaveDeckToFile(d Deck) error {
