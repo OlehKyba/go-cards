@@ -1,6 +1,9 @@
 package main
 
-import "testing"
+import (
+	"math/rand"
+	"testing"
+)
 
 const (
 	smallDeck = "6♣, 7♣, 8♣, 9♣, 10♣, J♣, Q♣, K♣, A♣, " +
@@ -11,6 +14,10 @@ const (
 		"2♦, 3♦, 4♦, 5♦, 6♦, 7♦, 8♦, 9♦, 10♦, J♦, Q♦, K♦, A♦, " +
 		"2♥, 3♥, 4♥, 5♥, 6♥, 7♥, 8♥, 9♥, 10♥, J♥, Q♥, K♥, A♥, " +
 		"2♠, 3♠, 4♠, 5♠, 6♠, 7♠, 8♠, 9♠, 10♠, J♠, Q♠, K♠, A♠"
+	smallDeckAfterShuffle = "K♠, 6♠, Q♠, Q♥, 6♣, 7♦, 7♠, 9♠, 8♠, " +
+		"K♥, A♦, Q♦, 8♦, K♣, 6♥, K♦, 9♣, 9♦, " +
+		"7♥, J♥, 6♦, Q♣, A♥, J♣, 8♥, 10♠, A♣, " +
+		"8♣, 10♣, 7♣, A♠, 10♦, J♦, 10♥, J♠, 9♥"
 )
 
 func TestNewDeckGetErrorWhenPassInvalidSize(t *testing.T) {
@@ -70,5 +77,19 @@ func TestDeal(t *testing.T) {
 	}
 	if len(hand2) != 30 {
 		t.Errorf("Expected to get hand with 30 cards, but got: %v", hand2)
+	}
+}
+
+func TestDeck_Shuffle(t *testing.T) {
+	deck, err := NewDeck(36)
+	if err != nil {
+		t.Errorf("Not expected error: %v", err)
+	}
+
+	r := rand.New(rand.NewSource(1))
+	deck.Shuffle(r)
+
+	if deck.toString() != smallDeckAfterShuffle {
+		t.Errorf("Expected to shuffeled deck, but got: %v", deck)
 	}
 }

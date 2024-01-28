@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"strconv"
 	"strings"
 )
@@ -55,8 +56,8 @@ func (d Deck) Print() {
 	fmt.Println(d.toString())
 }
 
-func (d Deck) Shuffle() {
-
+func (d Deck) Shuffle(r *rand.Rand) {
+	r.Shuffle(len(d), func(i, j int) { d[i], d[j] = d[j], d[i] })
 }
 
 func Deal(d Deck, size int) (Deck, Deck, error) {
